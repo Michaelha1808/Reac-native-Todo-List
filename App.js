@@ -1,88 +1,49 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
-
+import React, { useState } from 'react'
+import { Text, View, ScrollView, Alert } from 'react-native'
+import Task from './components/Task'
+import styles from './App.components.style'
+import Form from './components/Form/index'
 
 
 const App = () => {
+  const [taskList, setTaskList] = useState([])
+  const handleAddTask = (task) => {
+    //* add task
+    setTaskList([...taskList, task])
+  }
+  const handleDeleteTask = (index) => {
+    Alert.alert('Thông báo', 'Bạn có chắc chắn muốn xóa', [
+      {
+        text: 'OK',
+        onPress: () => {
+          let taskListTmp = [...taskList]
+          taskListTmp.splice(index, 1),
+            setTaskList(taskListTmp)
+        }
+      },
+      { text: 'Cancel', onPress: () => { } },
+    ]);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.body}>
         <Text style={styles.header}>Todo List</Text>
         <ScrollView style={styles.items}>
-          <TouchableOpacity>
-            <View style={styles.item}>
-              <View style={styles.square}>
-                <Text style={styles.number}>01</Text>
-              </View>
-              <Text style={styles.content}>Fix bub</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.item}>
-              <View style={styles.square}>
-                <Text style={styles.number}>02</Text>
-              </View>
-              <Text style={styles.content}>Eating</Text>
-            </View>
-          </TouchableOpacity>
-
+          {
+            taskList.map((item, index) => {
+              return <Task Key={index} title={item} number={index + 1} onDeleteTask={() => handleDeleteTask(index)} />
+            })
+          }
         </ScrollView>
       </View>
-      <View style={styles.input}></View>
+      <Form onAddTask={handleAddTask} />
 
     </View>
   )
 }
 
 export default App
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#eff7f8',
-    // alignItems: 'center',
-    // justifyContent: 'center'
-  },
-  body: {
-    flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 18
-  },
-  header: {
-    fontSize: 24,
-    color: '#21a3d0',
-    fontWeight: 'bold'
-  },
-  items: {
-    marginTop: 25
-  },
-  item: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    marginBottom: 15,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  square: {
-    width: 48,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: '#53d6f2',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  number: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#fff'
-  },
-  content: {
-    width: '80%',
-    fontSize: 16
-  }
-})
+
 
 
 
